@@ -1,0 +1,93 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Users {
+  createdAt          DateTime        @default(now())
+  email              String?
+  emailAddress       String?
+  firstName          String?
+  id                 String          @id @default(cuid())
+  lastName           String?
+  organizationsItems Organizations[]
+  updatedAt          DateTime        @updatedAt
+  userEmailAddress   String?
+  userFirstName      String?
+  userLastName       String?
+  userOrganization   String?
+}
+
+model Campaigns {
+  adGroupsItems  AdGroups[]
+  budget         Float?
+  createdAt      DateTime       @default(now())
+  endDate        DateTime?
+  id             String         @id @default(cuid())
+  name           String?
+  organization   Organizations? @relation(fields: [organizationId], references: [id])
+  organizationId String?
+  startDate      DateTime?
+  updatedAt      DateTime       @updatedAt
+}
+
+model Ads {
+  adGroup         AdGroups?    @relation(fields: [adGroupId], references: [id])
+  adGroupId       String?
+  categoriesItems Categories[]
+  createdAt       DateTime     @default(now())
+  description     String?
+  endDate         DateTime?
+  id              String       @id @default(cuid())
+  mediaFile       Json?
+  startDate       DateTime?
+  title           String?
+  updatedAt       DateTime     @updatedAt
+  url             String?
+}
+
+model AdGroups {
+  adsItems    Ads[]
+  campaign    Campaigns? @relation(fields: [campaignId], references: [id])
+  campaignId  String?
+  createdAt   DateTime   @default(now())
+  description String?
+  id          String     @id @default(cuid())
+  name        String?
+  updatedAt   DateTime   @updatedAt
+}
+
+model Organizations {
+  address        String?
+  campaignsItems Campaigns[]
+  createdAt      DateTime    @default(now())
+  id             String      @id @default(cuid())
+  name           String?
+  updatedAt      DateTime    @updatedAt
+  users          Users?      @relation(fields: [usersId], references: [id])
+  usersId        String?
+}
+
+model Categories {
+  ads         Ads?     @relation(fields: [adsId], references: [id])
+  adsId       String?
+  createdAt   DateTime @default(now())
+  description String?
+  id          String   @id @default(cuid())
+  name        String?
+  updatedAt   DateTime @updatedAt
+}
+
+model Storage {
+  createdAt DateTime @default(now())
+  fileName  String?
+  filePath  String?
+  fileSize  Int?
+  fileType  String?
+  id        String   @id @default(cuid())
+  updatedAt DateTime @updatedAt
+}
